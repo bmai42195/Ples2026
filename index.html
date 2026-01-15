@@ -115,7 +115,6 @@
             display: block;
         }
 
-        /* Стиль для заглушки, когда файл локально не найден */
         .photo-placeholder-msg {
             display: none;
             padding: 2rem;
@@ -180,7 +179,7 @@
         </section>
 
         <!-- Navigation -->
-        <nav class="flex justify-center sticky top-6 z-50">
+        <nav id="stickyNav" class="flex justify-center sticky top-6 z-50">
             <div class="bg-[#3E2723]/95 backdrop-blur-sm p-2 rounded-lg warm-shadow flex flex-wrap justify-center gap-1 border border-stone-800">
                 <button onclick="switchPage(1)" id="tab-1" class="px-6 py-2 rounded text-stone-200 text-sm font-bold transition-all duration-300 hover:bg-[#5D4037]">День 1</button>
                 <button onclick="switchPage(2)" id="tab-2" class="px-6 py-2 rounded text-stone-200 text-sm font-bold transition-all duration-300 hover:bg-[#5D4037]">День 2</button>
@@ -312,12 +311,19 @@
 
         let currentPage = 1;
 
-        function switchPage(id) {
+        function switchPage(id, shouldScroll = true) {
             currentPage = id;
             updateTabs();
             renderPage();
-            const nav = document.querySelector('nav');
-            window.scrollTo({ top: nav.offsetTop - 50, behavior: 'smooth' });
+            
+            if (shouldScroll) {
+                const navElement = document.getElementById('stickyNav');
+                if (navElement) {
+                    // Скроллим так, чтобы навигация была сверху, а контент начинался сразу под ней
+                    const offset = navElement.offsetTop - 10;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            }
         }
 
         function updateTabs() {
@@ -421,7 +427,9 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
-            switchPage(1);
+            // Вызываем первую страницу без скролла при загрузке, 
+            // чтобы пользователь видел заголовок "Тихие города России"
+            switchPage(1, false);
         });
     </script>
 </body>
